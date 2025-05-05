@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Page with Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="page-container">
+
+        <header class="page-header">
+            <h1>My Responsive Website</h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="content-grid">
+            <main class="main-content">
+                <h2>Main Content Area</h2>
+                <p>This area uses CSS Grid for layout alongside the sidebar. It adapts based on screen size.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+                <section id="contact" class="contact-section">
+                    <h2>Contact Us</h2>
+                    <p>Please fill out the form below.</p>
+
+                    <!-- Contact Form -->
+                    <form id="contactForm" novalidate>
+                        <div class="form-group">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                            <span class="error-message" id="nameError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                            <span class="error-message" id="emailError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject:</label>
+                            <input type="text" id="subject" name="subject" placeholder="Optional subject line">
+                            <!-- Not making this required for demo purposes -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message:</label>
+                            <textarea id="message" name="message" rows="5" required placeholder="Your message here..."></textarea>
+                            <span class="error-message" id="messageError"></span>
+                        </div>
+
+                        <button type="submit" class="submit-button">Send Message</button>
+                    </form>
+                    <div id="formSuccessMessage" class="success-message" style="display: none;">
+                        Thank you! Your message has been sent (simulation).
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <h3>Sidebar</h3>
+                <p>This could contain related links, ads, or additional information.</p>
+                <ul>
+                    <li>Link 1</li>
+                    <li>Link 2</li>
+                    <li>Link 3</li>
+                </ul>
+            </aside>
+        </div>
+
+        <footer class="page-footer">
+            <p>© 2023 My Responsive Website</p>
+        </footer>
+
+    </div> <!-- End page-container -->
+
+    <script src="script.js"></script>
+</body>
+</html>
