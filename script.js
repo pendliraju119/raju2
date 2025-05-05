@@ -1,114 +1,95 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('contactForm');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const messageInput = document.getElementById('message');
+document.addEventListener('DOMContentLoaded', () => {
+    // Get references to the DOM elements
+    const taskInput = document.getElementById('taskInput');
+    const addTaskBtn = document.getElementById('addTaskBtn');
+    const taskList = document.getElementById('taskList');
+    const emptyListMessage = document.getElementById('emptyListMessage');
 
-    const nameError = document.getElementById('nameError');
-    const emailError = document.getElementById('emailError');
-    const messageError = document.getElementById('messageError');
-
-    const successMessage = document.getElementById('formSuccessMessage');
-
-    // Regular expression for basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    form.addEventListener('submit', function(event) {
-        // Prevent the default form submission behavior
-        event.preventDefault();
-
-        let isValid = true;
-
-        // --- Reset previous states ---
-        // Clear error messages
-        nameError.textContent = '';
-        emailError.textContent = '';
-        messageError.textContent = '';
-        // Hide success message
-        successMessage.style.display = 'none';
-        // Remove error classes from inputs
-        nameInput.classList.remove('input-error');
-        emailInput.classList.remove('input-error');
-        messageInput.classList.remove('input-error');
-
-        // --- Validate Name ---
-        if (nameInput.value.trim() === '') {
-            nameError.textContent = 'Name is required.';
-            nameInput.classList.add('input-error');
-            isValid = false;
-        }
-
-        // --- Validate Email ---
-        const emailValue = emailInput.value.trim();
-        if (emailValue === '') {
-            emailError.textContent = 'Email is required.';
-            emailInput.classList.add('input-error');
-            isValid = false;
-        } else if (!emailRegex.test(emailValue)) {
-            emailError.textContent = 'Please enter a valid email address.';
-            emailInput.classList.add('input-error');
-            isValid = false;
-        }
-
-        // --- Validate Message ---
-        if (messageInput.value.trim() === '') {
-            messageError.textContent = 'Message is required.';
-            messageInput.classList.add('input-error');
-            isValid = false;
-        }
-
-        // --- If Form is Valid ---
-        if (isValid) {
-            console.log('Form is valid. Submitting data (simulated)...');
-            console.log('Name:', nameInput.value.trim());
-            console.log('Email:', emailInput.value.trim());
-            console.log('Subject:', document.getElementById('subject').value.trim()); // Get subject value too
-            console.log('Message:', messageInput.value.trim());
-
-            // Show success message
-            successMessage.style.display = 'block';
-
-            // Optionally clear the form
-            form.reset();
-
-            // In a real application, you would send the data to a server here
-            // using fetch() or XMLHttpRequest
-            // Example:
-            // fetch('/submit-form', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify({ name: nameInput.value.trim(), ... })
-            // })
-            // .then(response => response.json())
-            // .then(data => console.log('Success:', data))
-            // .catch((error) => console.error('Error:', error));
-
+    // Function to update the visibility of the "empty list" message
+    function updateEmptyMessage() {
+        if (taskList.children.length === 0) {
+            emptyListMessage.style.display = 'block';
         } else {
-            console.log('Form validation failed.');
+            emptyListMessage.style.display = 'none';
+        }
+    }
+
+    // Function to create a new task list item
+    function createTaskElement(taskText) {
+        // Create list item
+        const li = document.createElement('li');
+
+        // Create span for the task text
+        const taskSpan = document.createElement('span');
+        taskSpan.textContent = taskText;
+        // Add event listener to toggle completion on click
+        taskSpan.addEventListener('click', () => {
+            li.classList.toggle('completed');
+            // Optional: You could also move completed tasks to the bottom or add persistence here
+        });
+
+        // Create remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Remove';
+        removeBtn.className = 'remove-btn'; // Use className for easier styling/selection
+        // Add event listener to remove the task
+        removeBtn.addEventListener('click', () => {
+            taskList.removeChild(li);
+            updateEmptyMessage(); // Update message after removing
+            // Optional: Add persistence logic here (e.g., remove from localStorage)
+        });
+
+        // Append span and button to the list item
+        li.appendChild(taskSpan);
+        li.appendChild(removeBtn);
+
+        return li;
+    }
+
+    // Function to add a new task to the list
+    function addTask() {
+        const taskText = taskInput.value.trim(); // Get input value and remove leading/trailing spaces
+
+        if (taskText === '') {
+            alert('Please enter a task!'); // Basic validation
+            return; // Stop the function if input is empty
+        }
+
+        // Create the new task element
+        const newTask = createTaskElement(taskText);
+
+        // Add the new task to the list
+        taskList.appendChild(newTask);
+
+        // Clear the input field
+        taskInput.value = '';
+
+        // Set focus back to input for easy adding of next task
+        taskInput.focus();
+
+        // Hide the empty message if it was showing
+        updateEmptyMessage();
+
+        // Optional: Add persistence logic here (e.g., save to localStorage)
+    }
+
+    // --- Event Listeners ---
+
+    // Add task when the button is clicked
+    addTaskBtn.addEventListener('click', addTask);
+
+    // Add task when Enter key is pressed in the input field
+    taskInput.addEventListener('keypress', (event) => {
+        // Check if the key pressed was 'Enter'
+        if (event.key === 'Enter') {
+            addTask();
         }
     });
 
-    // --- Optional: Real-time feedback (remove error when user types) ---
-    function clearErrorOnChange(inputElement, errorElement) {
-        inputElement.addEventListener('input', function() {
-            if (inputElement.value.trim() !== '') {
-                errorElement.textContent = '';
-                inputElement.classList.remove('input-error');
-                 // Re-validate email format instantly if desired
-                 if (inputElement.type === 'email' && emailRegex.test(inputElement.value.trim())) {
-                     errorElement.textContent = '';
-                     inputElement.classList.remove('input-error');
-                 } else if (inputElement.type === 'email' && inputElement.value.trim() !== '') {
-                     // Optional: Show invalid format error immediately while typing if format is wrong
-                     // errorElement.textContent = 'Invalid email format.';
-                     // inputElement.classList.add('input-error');
-                 }
-            }
-        });
-    }
+    // --- Initial Setup ---
+    // Check if list is initially empty when the page loads
+    updateEmptyMessage();
 
-    clearErrorOnChange(nameInput, nameError);
-    clearErrorOnChange(emailInput, emailError);
-    clearErrorOnChange(messageInput, messageError);
-
+    // Optional: Load tasks from localStorage if implementing persistence
+    // loadTasksFromStorage();
 });
